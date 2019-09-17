@@ -1,8 +1,6 @@
 using System;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using Application.Errors;
 using Domain;
 using FluentValidation;
 using MediatR;
@@ -66,11 +64,6 @@ namespace Application.Activities
           City = request.City,
           Venue = request.Venue
         };
-
-        if (string.IsNullOrWhiteSpace(request.Title))
-        {
-          throw new RestException(HttpStatusCode.BadRequest, new { activity = "Title is not empty" });
-        }
 
         _logger.LogInformation($"Create Id: {activity.Id}, Title:{request.Title}");
         _context.Activities.Add(activity);
