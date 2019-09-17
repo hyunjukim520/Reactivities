@@ -1,7 +1,10 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Persistence;
@@ -27,6 +30,19 @@ namespace Application.Activities
       public string Venue { get; set; }
     }
 
+    public class CommandValidator : AbstractValidator<Command>
+    {
+      public CommandValidator()
+      {
+        RuleFor(x => x.Title).NotEmpty();
+        RuleFor(x => x.Description).NotEmpty();
+        RuleFor(x => x.Category).NotEmpty();
+        RuleFor(x => x.Date).NotEmpty();
+        RuleFor(x => x.City).NotEmpty();
+        RuleFor(x => x.Venue).NotEmpty();
+      }
+    }
+
     public class Handler : IRequestHandler<Command>
     {
       public readonly DataContext _context;
@@ -37,6 +53,7 @@ namespace Application.Activities
         _context = context;
         _logger = logger;
       }
+
       public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
       {
         var activity = new Activity
@@ -49,6 +66,11 @@ namespace Application.Activities
           City = request.City,
           Venue = request.Venue
         };
+
+        if (string.IsNullOrWhiteSpace(request.Title))
+        {
+          throw new RestException(HttpStatusCode.BadRequest, new { activity = "Title is not empty" });
+        }
 
         _logger.LogInformation($"Create Id: {activity.Id}, Title:{request.Title}");
         _context.Activities.Add(activity);
