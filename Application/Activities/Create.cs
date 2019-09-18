@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Domain;
 using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using Persistence;
 
 namespace Application.Activities
@@ -14,17 +13,11 @@ namespace Application.Activities
     public class Command : IRequest
     {
       public Guid Id { get; set; }
-
       public string Title { get; set; }
-
       public string Description { get; set; }
-
       public string Category { get; set; }
-
       public DateTime Date { get; set; }
-
       public string City { get; set; }
-
       public string Venue { get; set; }
     }
 
@@ -43,13 +36,10 @@ namespace Application.Activities
 
     public class Handler : IRequestHandler<Command>
     {
-      public readonly DataContext _context;
-      private readonly ILogger<Create> _logger;
-
-      public Handler(DataContext context, ILogger<Create> logger)
+      private readonly DataContext _context;
+      public Handler(DataContext context)
       {
         _context = context;
-        _logger = logger;
       }
 
       public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
@@ -65,7 +55,6 @@ namespace Application.Activities
           Venue = request.Venue
         };
 
-        _logger.LogInformation($"Create Id: {activity.Id}, Title:{request.Title}");
         _context.Activities.Add(activity);
         var success = await _context.SaveChangesAsync() > 0;
 

@@ -1,14 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using API.Middleware;
+using Application.Activities;
+using FluentValidation.AspNetCore;
+using MediatR;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Persistence;
-using Microsoft.EntityFrameworkCore;
-using MediatR;
-using Application.Activities;
-using FluentValidation.AspNetCore;
-using API.Middleware;
 
 namespace API
 {
@@ -31,14 +31,14 @@ namespace API
       services.AddCors(opt =>
       {
         opt.AddPolicy("CorsPolicy", policy =>
-        {
-          policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
-        });
+              {
+            policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:3000");
+          });
       });
       services.AddMediatR(typeof(List.Handler).Assembly);
       services.AddMvc()
-      .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Create>())
-      .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+          .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<Create>())
+          .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +56,7 @@ namespace API
         // app.UseHsts();
       }
 
-      //   app.UseHttpsRedirection();
+      // app.UseHttpsRedirection();
       app.UseCors("CorsPolicy");
       app.UseMvc();
     }
