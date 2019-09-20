@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
-namespace Domain
+namespace Application.Activities
 {
-  public class Activity
+  public class ActivityDto
   {
     public Guid Id { get; set; }
 
@@ -19,6 +20,7 @@ namespace Domain
 
     public string Venue { get; set; }
 
-    public virtual ICollection<UserActivity> UserActivities { get; set; } // virtual matching to opt.UseLazyLoadingProxies();
+    [JsonProperty("attendees")]
+    public ICollection<AttendeeDto> UserActivities { get; set; }
   }
 }
