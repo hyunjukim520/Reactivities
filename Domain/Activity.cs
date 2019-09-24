@@ -20,5 +20,7 @@ namespace Domain
     public string Venue { get; set; }
 
     public virtual ICollection<UserActivity> UserActivities { get; set; } // virtual matching to opt.UseLazyLoadingProxies();
+
+    public virtual ICollection<Comment> Comments { get; set; }
   }
 }
